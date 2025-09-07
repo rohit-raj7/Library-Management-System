@@ -34,10 +34,12 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-// ✅ Routes
+
+
+app.get("/", (req, res) => res.send("✅ API Working"));
+ 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
-
 // ✅ Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
