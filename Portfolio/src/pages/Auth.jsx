@@ -1,51 +1,97 @@
 import { useState } from "react";
-import Input from '../components/Input';
-import Button from '../components/Buttom'
+
+// Simple Input component
+function Input({ label, type = "text", ...props }) {
+  return (
+    <div className="flex flex-col">
+      <label className="mb-1 font-medium text-gray-700">{label}</label>
+      <input
+        type={type}
+        className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        {...props}
+      />
+    </div>
+  );
+}
+
+// Simple Button component
+function Button({ children, disabled, type = "button" }) {
+  return (
+    <button
+      type={type}
+      disabled={disabled}
+      className={`w-full py-2 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed`}
+    >
+      {children}
+    </button>
+  );
+}
 
 export default function Auth() {
   const [tab, setTab] = useState("login");
   const [form, setForm] = useState({ email: "", password: "", name: "" });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  const API = "https://assignment20-five.vercel.app/api/auth";
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (tab === "login") {
-      console.log("Login with", form);
-    } else {
-      console.log("Signup with", form);
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const endpoint = tab === "login" ? `${API}/login` : `${API}/register`;
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Something went wrong");
+
+      setMessage({ type: "success", text: data.message || "Success!" });
+
+      if (tab === "login" && data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      setForm({ email: "", password: "", name: "" });
+    } catch (err) {
+      setMessage({ type: "error", text: err.message });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[80vh] bg-gray-50">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-8">
+    <div className="flex items-center justify-center min-h-[80vh] bg-gradient-to-br from-indigo-50 to-white">
+      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
         {/* Tabs */}
-        <div className="flex justify-center mb-6">
-          <button
-            onClick={() => setTab("login")}
-            className={`px-6 py-2 font-medium rounded-l-lg ${tab === "login"
-              ? "bg-indigo-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            Login
-          </button>
-          <button
-            onClick={() => setTab("signup")}
-            className={`px-6 py-2 font-medium rounded-r-lg ${tab === "signup"
-              ? "bg-indigo-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            Signup
-          </button>
+        <div className="flex justify-center mb-6 gap-2">
+          {["login", "signup"].map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-6 py-2 font-medium rounded-lg transition ${
+                tab === t
+                  ? "bg-indigo-600 text-white shadow"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+            >
+              {t === "login" ? "Login" : "Signup"}
+            </button>
+          ))}
         </div>
 
         {/* Forms */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
           {tab === "signup" && (
             <Input
               label="Full Name"
@@ -53,6 +99,7 @@ export default function Auth() {
               value={form.name}
               onChange={handleChange}
               placeholder="Enter your name"
+              required
             />
           )}
           <Input
@@ -62,6 +109,7 @@ export default function Auth() {
             value={form.email}
             onChange={handleChange}
             placeholder="you@example.com"
+            required
           />
           <Input
             label="Password"
@@ -70,9 +118,24 @@ export default function Auth() {
             value={form.password}
             onChange={handleChange}
             placeholder="Enter password"
+            required
           />
-          <Button type="submit">{tab === "login" ? "Login" : "Signup"}</Button>
+
+          <Button type="submit" disabled={loading}>
+            {loading ? "Processing..." : tab === "login" ? "Login" : "Signup"}
+          </Button>
         </form>
+
+        {/* Message */}
+        {message && (
+          <p
+            className={`mt-4 text-center text-sm ${
+              message.type === "success" ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message.text}
+          </p>
+        )}
 
         {/* Extra links */}
         {tab === "login" && (

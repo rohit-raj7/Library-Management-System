@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/books"; // your backend endpoint
+const API_URL = "https://assignment20-five.vercel.app/api/books"; // your backend endpoint
 
 export async function getBooks() {
   const res = await fetch(API_URL);
