@@ -9,7 +9,6 @@ const generateToken = (userId) => {
   );
 };
 
-// Register user (Admin or Member)
 export const register = async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -28,14 +27,13 @@ export const register = async (req, res) => {
         email: user.email,
         role: user.role,
       },
-      token: generateToken(user._id),
+      token: generateToken(user),   // ✅ pass full user
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// Login
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -53,7 +51,7 @@ export const login = async (req, res) => {
         email: user.email,
         role: user.role,
       },
-      token: generateToken(user._id),
+      token: generateToken(user),   // ✅ pass full user
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

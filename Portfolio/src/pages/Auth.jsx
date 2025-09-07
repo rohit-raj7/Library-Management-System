@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-// Simple Input component
+// Input component
 function Input({ label, type = "text", ...props }) {
   return (
     <div className="flex flex-col">
@@ -14,7 +15,7 @@ function Input({ label, type = "text", ...props }) {
   );
 }
 
-// Simple Button component
+// Button component
 function Button({ children, disabled, type = "button" }) {
   return (
     <button
@@ -33,6 +34,7 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
+  const navigate = useNavigate();
   const API = "https://assignment20-five.vercel.app/api/auth";
 
   const handleChange = (e) => {
@@ -46,7 +48,6 @@ export default function Auth() {
 
     try {
       const endpoint = tab === "login" ? `${API}/login` : `${API}/register`;
-
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -58,8 +59,16 @@ export default function Auth() {
 
       setMessage({ type: "success", text: data.message || "Success!" });
 
-      if (tab === "login" && data.token) {
+      if (data.token && data.user && data.user.id) {
+        // Save user info in localStorage
         localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("userId", data.user.id);
+
+        // Navigate to /userId/books and refresh page
+        window.location.href = `/${data.user.id}/books`;
+        // Alternatively, if you prefer SPA navigation without full reload:
+        // navigate(`/${data.user.id}/books`, { replace: true });
       }
 
       setForm({ email: "", password: "", name: "" });

@@ -1,6 +1,6 @@
 import Book from '../models/Book.js';
 
-// Add a new book (Admin / protected)
+// Add a new book (Admin only)
 export const addBook = async (req, res) => {
   const { title, author, isbn } = req.body;
   try {
@@ -14,7 +14,7 @@ export const addBook = async (req, res) => {
   }
 };
 
-// Fetch all available books (public)
+// Get all available books (public)
 export const getAvailableBooks = async (req, res) => {
   try {
     const books = await Book.find({ available: true });
@@ -24,7 +24,7 @@ export const getAvailableBooks = async (req, res) => {
   }
 };
 
-// Borrow a book (Member)
+// Borrow a book (Member/Admin)
 export const borrowBook = async (req, res) => {
   const { id } = req.params;
   try {
@@ -40,7 +40,7 @@ export const borrowBook = async (req, res) => {
   }
 };
 
-// Return a book (Member)
+// Return a book (Member/Admin)
 export const returnBook = async (req, res) => {
   const { id } = req.params;
   try {
