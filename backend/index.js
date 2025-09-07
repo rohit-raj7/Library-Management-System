@@ -15,8 +15,7 @@ connectDB();
 
 const allowedOrigins = [
   "http://localhost:3000",              
-  "http://localhost:3001",            
-  "https://ai-interviewnow.vercel.app" 
+
 ];
 
 app.use(
