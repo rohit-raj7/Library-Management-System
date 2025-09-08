@@ -19,7 +19,7 @@ export const protect = async (req, res, next) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role || decoded.role, // works both ways
+        role: user.role || decoded.role, 
       };
 
       return next();

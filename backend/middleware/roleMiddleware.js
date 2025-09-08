@@ -1,5 +1,5 @@
 export const authorize = (roles = []) => {
-  // Convert single role string → array
+  
   if (typeof roles === "string") {
     roles = [roles];
   }
