@@ -7,7 +7,8 @@ It demonstrates skills in **API design, database integration, authentication, an
 
 ---
 
-## 🚀 Live Demo (https://library-management-nu-one.vercel.app/).  
+## 🚀 Live Demo
+ [https://library-management-nu-one.vercel.app/](https://library-management-nu-one.vercel.app/).  
 
 ## 🔗Back-end 
 [https://assignment20-five.vercel.app/](https://assignment20-five.vercel.app/)
