@@ -47,13 +47,13 @@ It demonstrates skills in **API design, database integration, authentication, an
 
 ## ⚙️ Installation & Setup
 
-3️⃣ Frontend Setup
-cd client
-npm install
-npm run dev
+**3️⃣ Frontend Setup**
+- cd client
+- npm install
+- npm run dev
 
 - - -
-2️⃣ Backend Setup
-cd backend
-npm install
-npm start
+**2️⃣ Backend Setup**
+- cd backend
+- npm install
+- npm start
