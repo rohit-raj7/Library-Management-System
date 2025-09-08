@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 export default function Navbar() {
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
   const navigate = useNavigate();
-
-  // Update userId when localStorage changes (login/logout)
+ 
   useEffect(() => {
     const handleStorageChange = () => {
       setUserId(localStorage.getItem("userId"));
@@ -18,7 +17,7 @@ export default function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
-    setUserId(null); // update state immediately
+    setUserId(null);  
     navigate("/auth");
   };
 

@@ -3,7 +3,7 @@ const API_URL = "https://assignment20-five.vercel.app/api/books";
 
 //  Get token from localStorage
 function getAuthHeaders() {
-  const token = localStorage.getItem("token"); // make sure you stored it after login
+  const token = localStorage.getItem("token"); 
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 

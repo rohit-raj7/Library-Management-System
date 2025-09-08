@@ -62,9 +62,9 @@ export default function Auth() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("userId", data.user.id);
-
-        // Redirect user
-        navigate(`/${data.user.id}/books`, { replace: true });
+ 
+        // navigate(`/${data.user.id}/books`, { replace: true });
+        window.location.replace(`/${data.user.id}/books`);
       }
 
       setForm({ email: "", password: "", name: "" });

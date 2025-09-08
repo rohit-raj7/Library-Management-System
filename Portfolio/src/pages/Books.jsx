@@ -1,7 +1,7 @@
- 
 import { useEffect, useState } from "react";
 import BookCard from "../components/BookCard";
 import SearchBar from "../components/SearchBar";
+import SkeletonLoadingUi from "./SkeletonLoadingUi";
 import { getBooks, borrowBook, returnBook, updateBook } from "../services/api";
 import { toast } from "react-toastify";
 
@@ -71,7 +71,7 @@ export default function Books() {
       <SearchBar query={query} setQuery={setQuery} />
 
       {loading ? (
-        <p className="text-center text-gray-600 mt-6">Loading books...</p>
+        <SkeletonLoadingUi />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
           {filtered.length > 0 ? (
