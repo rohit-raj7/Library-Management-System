@@ -55,3 +55,26 @@ export const returnBook = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+//Update books
+
+export const updateBook = async (req, res) => {
+  const { id } = req.params;
+  const { title, author, isbn, available } = req.body;
+
+  try {
+    const book = await Book.findById(id);
+    if (!book) return res.status(404).json({ message: "Book not found" });
+
+    if (title) book.title = title;
+    if (author) book.author = author;
+    if (isbn) book.isbn = isbn;
+    if (available !== undefined) book.available = available;
+
+    await book.save();
+    res.json({ message: "Book updated successfully", book });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

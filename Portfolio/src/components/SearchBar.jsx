@@ -8,4 +8,4 @@ export default function SearchBar({ query, setQuery }) {
       className="w-full p-3 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
     />
   );
-}
+} 

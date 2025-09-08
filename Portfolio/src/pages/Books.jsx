@@ -1,43 +1,62 @@
+ 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import BookCard from "../components/BookCard";
 import SearchBar from "../components/SearchBar";
-import { getBooks, borrowBook, returnBook } from "../services/api";
+import { getBooks, borrowBook, returnBook, updateBook } from "../services/api";
+import { toast } from "react-toastify";
 
 export default function Books() {
-  const { userId } = useParams(); // get userId from URL
   const [books, setBooks] = useState([]);
   const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (userId) fetchBooks();
-  }, [userId]);
+    fetchBooks();
+  }, []);
 
-  // Fetch books for the specific user
   async function fetchBooks() {
     try {
-      const data = await getBooks(userId); // pass userId to API call
+      setLoading(true);
+      const data = await getBooks();
       setBooks(data);
     } catch (err) {
       console.error("Failed to fetch books:", err);
+      toast.error("❌ Failed to load books");
+    } finally {
+      setLoading(false);
     }
   }
 
   async function handleBorrow(bookId) {
     try {
-      await borrowBook(userId, bookId); // pass userId to borrow API
+      await borrowBook(bookId);
+      toast.success("📚 Book borrowed successfully!");
       fetchBooks();
     } catch (err) {
       console.error("Failed to borrow book:", err);
+      toast.error("❌ Failed to borrow book");
     }
   }
 
   async function handleReturn(bookId) {
     try {
-      await returnBook(userId, bookId); // pass userId to return API
+      await returnBook(bookId);
+      toast.success("✅ Book returned successfully!");
       fetchBooks();
     } catch (err) {
       console.error("Failed to return book:", err);
+      toast.error("❌ Failed to return book");
+    }
+  }
+
+  async function handleUpdate(bookId, updatedData) {
+    try {
+      await updateBook(bookId, updatedData);
+      toast.success("✏️ Book updated successfully!");
+      fetchBooks();
+    } catch (err) {
+      console.error("Failed to update book:", err);
+      toast.error("❌ Failed to update book");
     }
   }
 
@@ -48,18 +67,30 @@ export default function Books() {
   );
 
   return (
-    <div>
+    <div className="p-6">
       <SearchBar query={query} setQuery={setQuery} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-        {filtered.map((book) => (
-          <BookCard
-            key={book._id}
-            book={book}
-            onBorrow={handleBorrow}
-            onReturn={handleReturn}
-          />
-        ))}
-      </div>
+
+      {loading ? (
+        <p className="text-center text-gray-600 mt-6">Loading books...</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+          {filtered.length > 0 ? (
+            filtered.map((book) => (
+              <BookCard
+                key={book._id}
+                book={book}
+                onBorrow={handleBorrow}
+                onReturn={handleReturn}
+                onUpdate={handleUpdate}
+              />
+            ))
+          ) : (
+            <p className="col-span-full text-center text-gray-500">
+              No books found.
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

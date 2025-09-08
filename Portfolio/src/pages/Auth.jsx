@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // Input component
 function Input({ label, type = "text", ...props }) {
@@ -21,7 +22,7 @@ function Button({ children, disabled, type = "button" }) {
     <button
       type={type}
       disabled={disabled}
-      className={`w-full py-2 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed`}
+      className="w-full py-2 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {children}
     </button>
@@ -32,7 +33,6 @@ export default function Auth() {
   const [tab, setTab] = useState("login");
   const [form, setForm] = useState({ email: "", password: "", name: "" });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
 
   const navigate = useNavigate();
   const API = "https://assignment20-five.vercel.app/api/auth";
@@ -44,7 +44,6 @@ export default function Auth() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage(null);
 
     try {
       const endpoint = tab === "login" ? `${API}/login` : `${API}/register`;
@@ -57,23 +56,20 @@ export default function Auth() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Something went wrong");
 
-      setMessage({ type: "success", text: data.message || "Success!" });
+      toast.success(data.message || "Success! ");
 
-      if (data.token && data.user && data.user.id) {
-        // Save user info in localStorage
+      if (data.token && data.user && data.user.id) { 
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("userId", data.user.id);
 
-        // Navigate to /userId/books and refresh page
-        window.location.href = `/${data.user.id}/books`;
-        // Alternatively, if you prefer SPA navigation without full reload:
-        // navigate(`/${data.user.id}/books`, { replace: true });
+        // Redirect user
+        navigate(`/${data.user.id}/books`, { replace: true });
       }
 
       setForm({ email: "", password: "", name: "" });
     } catch (err) {
-      setMessage({ type: "error", text: err.message });
+      toast.error(err.message || "❌ Authentication failed");
     } finally {
       setLoading(false);
     }
@@ -134,17 +130,6 @@ export default function Auth() {
             {loading ? "Processing..." : tab === "login" ? "Login" : "Signup"}
           </Button>
         </form>
-
-        {/* Message */}
-        {message && (
-          <p
-            className={`mt-4 text-center text-sm ${
-              message.type === "success" ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {message.text}
-          </p>
-        )}
 
         {/* Extra links */}
         {tab === "login" && (
