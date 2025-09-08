@@ -35,7 +35,7 @@ It demonstrates skills in **API design, database integration, authentication, an
 
 ---
 
-**Bonus**
+**Bonus (Extra features) ** 
 - 🔐 Implement JWT-based authentication.
 - 👥 Add user roles (Login, Signup).
 ---
